@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import axios from "axios";
+import { API } from "../services/api"; 
 
 export default function Recorder({ onNewNote }) {
   const [recording, setRecording] = useState(false);
@@ -24,15 +24,13 @@ export default function Recorder({ onNewNote }) {
         const formData = new FormData();
         formData.append("audio", file);
 
-        //Send audio for transcription
-        const transRes = await axios.post(
-          "http://localhost:5000/api/notes/transcribe",
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
+        // Send audio for transcription
+        const transRes = await API.post("/api/notes/transcribe", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
 
         const transcript = transRes.data.transcript;
-        await onNewNote();
+        await onNewNote(); // refresh notes
       } catch (error) {
         console.error("Error creating note:", error);
       }

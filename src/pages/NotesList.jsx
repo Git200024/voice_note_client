@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import Recorder from "../components/Recorder";
 import Note from "../components/Note";
-import axios from "axios";
+import { API } from "../services/api"; 
 
 export default function NotesList() {
   const [notes, setNotes] = useState([]);
 
   const loadNotes = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/notes");
+      const res = await API.get("/api/notes");
 
       setNotes(
         res.data.sort(

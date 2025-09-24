@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import { API } from "../services/api"; 
 
 export default function Note({ note, onRefresh }) {
   const [editing, setEditing] = useState(false);
@@ -12,9 +12,7 @@ export default function Note({ note, onRefresh }) {
 
   const handleSave = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/notes/${note._id}`, {
-        transcript,
-      });
+      await API.put(`/api/notes/${note._id}`, { transcript });
       setEditing(false);
       onRefresh();
     } catch (error) {
@@ -25,12 +23,8 @@ export default function Note({ note, onRefresh }) {
   const handleGenerateSummary = async () => {
     setSummaryLoading(true);
     try {
-      const res = await axios.post(
-        `http://localhost:5000/api/notes/${note._id}/summary`
-      );
-      if (res.data.summary) {
-        note.summary = res.data.summary;
-      }
+      const res = await API.post(`/api/notes/${note._id}/summary`);
+      if (res.data.summary) note.summary = res.data.summary;
       onRefresh();
     } catch (error) {
       console.error("Error generating summary:", error);
@@ -41,7 +35,7 @@ export default function Note({ note, onRefresh }) {
 
   const handleDelete = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/notes/${note._id}`);
+      await API.delete(`/api/notes/${note._id}`);
       onRefresh();
     } catch (error) {
       console.error("Error deleting note:", error);
